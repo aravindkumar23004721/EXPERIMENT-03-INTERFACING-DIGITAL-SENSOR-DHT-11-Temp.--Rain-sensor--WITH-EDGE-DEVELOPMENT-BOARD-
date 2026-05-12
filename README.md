@@ -2,10 +2,10 @@
 
 ---
 
-### **NAME:**  
-### **DEPARTMENT:**  
-### **ROLL NO:**  
-### **DATE OF EXPERIMENT:**  
+### **NAME: Aravind Kumar SS 
+### **DEPARTMENT: CSE(Iot) 
+### **ROLL NO: 212223110004
+### **DATE OF EXPERIMENT: 12-05-2026
 
 ---
 
@@ -70,23 +70,52 @@ Connect the Rain Sensor (LM393) D0 to any one GPIO.
 Experiment 4A
 ## PROGRAM (Python)
 ```
-
-
- 
-
-
-
- 
+import Adafruit_DHT
+import paho.mqtt.client as mqtt
+import ssl
+import time
+# ---------------- DHT11 Setup ----------------
+DHT_SENSOR = Adafruit_DHT.DHT11
+DHT_PIN = 18 # GPIO4
+# ---------------- HiveMQ Cloud Credentials ----------------
+MQTT_BROKER = "fa46e38d0acd45988a527c5cca2cda98.s1.eu.hivemq.cloud"
+MQTT_PORT = 8883
+MQTT_USER = "hivemq.webclient.1778576119824"
+MQTT_PASSWORD = "JK#>trCl3pB4I6.,hUa9"
+TEMP_TOPIC = "raspberrypi/dht/temperature"
+HUM_TOPIC = "raspberrypi/dht/humidity"
+client = mqtt.Client()
+client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
+client.tls_set(tls_version=ssl.PROTOCOL_TLS)
+client.connect(MQTT_BROKER, MQTT_PORT)
+print("Connected to HiveMQ Cloud")
+print("Reading DHT11 Sensor...\n")
+while True:
+	humidity, temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
+	if humidity is not None and temperature is not None:
+		print(f"Temperature = {temperature} °C")
+		print(f"Humidity = {humidity} %")
+		print("---------------------------")
+			# Publish to HiveMQ
+		client.publish(TEMP_TOPIC, temperature)
+		client.publish(HUM_TOPIC, humidity)
+		print("Data sent to HiveMQ\n")
+	else:
+		print("Sensor failure. Check wiring.")
+	time.sleep(10)
 ````
 
 ### OUPUT  
 Experiment 4A
 
-# FIGURE -04 ADD TITILE HERE 
+# FIGURE -04 ADD Kit Image
+<img width="720" height="1280" alt="WhatsApp Image 2026-05-12 at 2 32 36 PM" src="https://github.com/user-attachments/assets/bfc3e08e-4cef-4fa7-ab23-e9c0b1757e9d"/>
 
-#  FIGURE -05 ADD TITILE HERE 
+#  FIGURE -05 ADD Console Output
+<img width="622" height="707" alt="WhatsApp Image 2026-05-12 at 2 29 11 PM" src="https://github.com/user-attachments/assets/84c86b5a-17e6-48aa-a4e4-3b93c45d4de8" />
 
-# FIGURE -06 ADD TITLE HERE 
+# FIGURE -06 ADD HiveMQ Output
+<img width="1600" height="807" alt="WhatsApp Image 2026-05-12 at 2 29 18 PM" src="https://github.com/user-attachments/assets/5929d478-847f-4389-85e1-78e109935e6d" />
 
 Experiment 4B
 ## PROGRAM (Python)
