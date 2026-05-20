@@ -106,39 +106,134 @@ while True:
 ````
 
 ### OUPUT  
-Experiment 4A
+Experiment 3A
 
-# FIGURE -04 ADD Kit Image
+# FIGURE -04 Kit Image
 <img width="720" height="1280" alt="WhatsApp Image 2026-05-12 at 2 32 36 PM" src="https://github.com/user-attachments/assets/bfc3e08e-4cef-4fa7-ab23-e9c0b1757e9d"/>
 
-#  FIGURE -05 ADD Console Output
+# FIGURE -05 Console Output
 <img width="622" height="707" alt="WhatsApp Image 2026-05-12 at 2 29 11 PM" src="https://github.com/user-attachments/assets/84c86b5a-17e6-48aa-a4e4-3b93c45d4de8" />
 
-# FIGURE -06 ADD HiveMQ Output
+# FIGURE -06 HiveMQ Output
 <img width="1600" height="807" alt="WhatsApp Image 2026-05-12 at 2 29 18 PM" src="https://github.com/user-attachments/assets/5929d478-847f-4389-85e1-78e109935e6d" />
 
-Experiment 4B
+Experiment 3B
 ## PROGRAM (Python)
 ```
+import time
+import ssl
+import json
+import RPi.GPIO as GPIO
+import paho.mqtt.client as mqtt
 
+# =====================================================
+# GPIO SETUP
+# =====================================================
 
- 
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
+RAIN_SENSOR_PIN = 18
 
+GPIO.setup(RAIN_SENSOR_PIN, GPIO.IN)
 
- 
+# =====================================================
+# MQTT SETUP
+# =====================================================
+
+MQTT_BROKER = "fa46e38d0acd45988a527c5cca2cda98.s1.eu.hivemq.cloud"
+MQTT_PORT = 8883
+
+MQTT_USER = "hivemq.webclient.1779182353075"
+MQTT_PASSWORD = "m2a0G>C7opekAXP#%L@4"
+
+MQTT_TOPIC = "raspberrypi/rain"
+
+client = mqtt.Client()
+
+client.username_pw_set(
+    MQTT_USER,
+    MQTT_PASSWORD
+)
+
+client.tls_set(
+    tls_version=ssl.PROTOCOL_TLS
+)
+
+# =====================================================
+# CONNECT TO HIVEMQ
+# =====================================================
+
+print("Connecting to HiveMQ Cloud...")
+
+client.connect(
+    MQTT_BROKER,
+    MQTT_PORT
+)
+
+client.loop_start()
+
+print("Connected Successfully")
+
+# =====================================================
+# MAIN LOOP
+# =====================================================
+
+try:
+
+    while True:
+
+        rain_value = GPIO.input(RAIN_SENSOR_PIN)
+
+        # ACTIVE LOW SENSOR
+        if rain_value == 0:
+
+            status = "RAIN DETECTED"
+            rain_status = 1
+
+        else:
+
+            status = "NO RAIN"
+            rain_status = 0
+
+        print(status)
+
+        payload = {
+            "rain_status": rain_status,
+            "message": status
+        }
+
+        client.publish(
+            MQTT_TOPIC,
+            json.dumps(payload)
+        )
+
+        print("Data Published")
+        print(payload)
+
+        time.sleep(5)
+
+except KeyboardInterrupt:
+
+    print("Program Stopped")
+
+    GPIO.cleanup()
+
+    client.loop_stop()
+    client.disconnect()
 ````
 
 ### OUPUT  
 
-# FIGURE -07 ADD TITILE HERE 
+# FIGURE -07  Kit Image
+<img width="1200" height="1600" alt="WhatsApp Image 2026-05-19 at 2 39 17 PM" src="https://github.com/user-attachments/assets/5fcc6926-905a-432f-90f7-96183f8efb40" />
 
-#  FIGURE -08 ADD TITILE HERE 
+#  FIGURE -08 Console Output
+<img width="642" height="733" alt="WhatsApp Image 2026-05-19 at 2 52 54 PM" src="https://github.com/user-attachments/assets/34361e39-d830-44ce-8676-734f3a984d06" />
 
-# FIGURE -09 ADD TITLE HERE 
-
-
-
+# FIGURE -09 HiveMQ Output
+<img width="1600" height="809" alt="WhatsApp Image 2026-05-19 at 2 52 46 PM" src="https://github.com/user-attachments/assets/7c4ba9f3-a100-4063-900f-cbb56945f40e" />
+<img width="1600" height="807" alt="WhatsApp Image 2026-05-19 at 2 52 51 PM" src="https://github.com/user-attachments/assets/ca85b8cd-38f5-4ef1-9043-8dcde12aa3b9" />
 
 ## **RESULT:**  
 The **Temperature and humidity sensor (DHT 11) Rain Sensor (LM393)** was successfully interfaced with the **Raspberry Pi 4**, and real-time **Temperature, Humidity and Rain status** were read and displayed in Console and HiveMq Cloud. 
