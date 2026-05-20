@@ -226,9 +226,11 @@ except KeyboardInterrupt:
 ### OUPUT  
 
 # FIGURE -07  Kit Image
+
 <img width="1200" height="1600" alt="WhatsApp Image 2026-05-19 at 2 39 17 PM" src="https://github.com/user-attachments/assets/5fcc6926-905a-432f-90f7-96183f8efb40" />
 
 #  FIGURE -08 Console Output
+
 <img width="642" height="733" alt="WhatsApp Image 2026-05-19 at 2 52 54 PM" src="https://github.com/user-attachments/assets/34361e39-d830-44ce-8676-734f3a984d06" />
 
 # FIGURE -09 HiveMQ Output
